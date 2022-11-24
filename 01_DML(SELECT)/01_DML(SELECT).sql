@@ -416,13 +416,13 @@ WHERE SALARY * 12 >= 30000000 AND BONUS IS NULL;
 -- 3. 입사일이 '95/01/01' 이상이고 부서배치를 받은 사원들의 (사번, 사원명, 입사일, 부서코드) 조회
 SELECT EMP_ID, EMP_NAME, HIRE_DATE, DEPT_CODE
 FROM EMPLOYEE
-WHERE HIRE_DATE >= '95/01/01';
+WHERE HIRE_DATE >= '95/01/01' AND DEPT_CODE IS NOT NULL;
 
 -- 4. 급여가 200만원 이상 500만원 이하이고 입사일이 '01/01/01' 이상이고 보너스를 받지 않는 사원들의
 -- (사번, 사원명, 급여, 입사일, 보너스) 조회
 SELECT EMP_ID, EMP_NAME, SALARY, HIRE_DATE, BONUS
 FROM EMPLOYEE
-WHERE SALARY BETWEEN 2000000 AND 5000000 AND HIRE_DATE >= '01/01/01';
+WHERE SALARY BETWEEN 2000000 AND 5000000 AND HIRE_DATE >= '01/01/01' AND BONUS IS NULL;
 
 -- 5. 보너스포함연봉이 NULL이 아니고 이름에 '하'가 포함되어있는 사원들의 (사번, 사원명, 급여, 보너스포함연봉) 조회 (별칭부여)
 SELECT EMP_ID AS "사번", EMP_NAME AS "사원명", SALARY AS "급여", (SALARY + SALARY * BONUS) * 12 AS "보너스포함연봉"
