@@ -403,6 +403,7 @@ SELECT *
 FROM EMPLOYEE
 WHERE (JOB_CODE = 'J7' OR JOB_CODE = 'J2') AND SALARY >= 2000000;                        -- 괄호가 없으면 연산자 우선 순위에 따라 JOB_CODE = 'J2' AND SALARY >= 2000000 먼저 실행되고 OR JOB_CODE = 'J7'이 나중에 실행된다.
 
+
 -- 1. 사수가 없고 부서배치도 받지 않은 사원들의 (사원명, 사수사번, 부서코드) 조회
 SELECT EMP_NAME, MANAGER_ID, DEPT_CODE
 FROM EMPLOYEE
@@ -428,154 +429,41 @@ WHERE SALARY BETWEEN 2000000 AND 5000000 AND HIRE_DATE >= '01/01/01' AND BONUS I
 SELECT EMP_ID AS "사번", EMP_NAME AS "사원명", SALARY AS "급여", (SALARY + SALARY * BONUS) * 12 AS "보너스포함연봉"
 FROM EMPLOYEE
 WHERE (SALARY + SALARY * BONUS) * 12 IS NOT NULL AND EMP_NAME LIKE '%하%';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- WHERE BONUS IS NOT NULL AND EMP_NAME LIKE '%하%'; 이것도 가능함!
+
+-----------------------------------------------------------------------------------------------------
+SELECT EMP_ID, EMP_NAME, SALARY -- 3 실행순서
+FROM EMPLOYEE -- 1 실행순서
+WHERE DEPT_CODE IS NULL; -- 2 실행순서
+-- ==================================================================================================
+
+/*
+    < ORDER BY 절 >
+    가장 마지막줄에 작성! 뿐만 아니라 실행순서 또한 마지막에 실행
+    
+    [표현법]
+    SELECT 조회할컬럼1, 컬럼2, 컬럼3, 산술연산식 AS "별칭", ....
+    FROM 조회하고자하는테이블명
+    WHERE 조건식
+    ORDER BY 정렬하고싶은컬럼|별칭|컬럼순번 [ASC|DESC] [NULLS FIRST|NULLS LAST]                                         -- []는 생략가능 / default값은 ASC
+    
+    - ASC : 오름차순 정렬 (생략시 기본값)
+    - DESC : 내림차순 정렬
+    
+    - NULLS FIRST : 정렬하고자 하는 컬럼값에 NULL이 있을 경우 해당 데이터를 맨 앞 배치(생략시 DESC일때의 기본값)
+    - NULLS LAST : 정렬하고자 하는 컬럼값에 NULL이 있을 경우 해당 데이터를 맨 뒤 배치(생략시 ASC일때의 기본값)
+*/
+SELECT *
+FROM EMPLOYEE
+--ORDER BY BONUS;                                                                                                -- 생략 (ASC NULLS LAST)
+--ORDER BY BONUS ASC;            -- 오름차순 정렬일 때 기본적으로 NULLS LAST구나!                                       -- 위의 결과와 같음
+--ORDER BY BONUS ASC NULLS FIRST;
+--ORDER BY BONUS DESC;           -- 내림차순 정렬일 때 기본적으로 NULLS FIRST구나!                                      -- 생략 (NULLS FIRST)
+ORDER BY BONUS DESC, SALARY ASC; -- 정렬기준 여러개 제시 가능(첫번째 기준의 컬럼값이 동일할 경우 두번째 기준 컬럼가지고 정렬)
+
+-- 전 사원의 사원명, 연봉 조회 (이때 연봉별 내림차순 정렬 조회)
+SELECT EMP_NAME, SALARY * 12 AS "연봉"
+FROM EMPLOYEE
+--ORDER BY SALARY * 12 DESC;
+--ORDER BY 연봉 DESC; -- 별칭 사용 가능                                                                              -- ORDER BY절의 실행순서가 제일 마지막이므로 별칭 사용 가능함         
+ORDER BY 2 DESC; -- 컬럼순번 사용 가능(컬럼개수보다 큰 숫자 안됨)                                                         -- 3가지 다 결과가 동일함!
