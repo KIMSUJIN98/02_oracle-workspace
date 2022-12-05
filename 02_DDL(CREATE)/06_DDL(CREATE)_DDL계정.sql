@@ -260,79 +260,110 @@ INSERT INTO MEM_CHECK
 VALUES(2, 'user02', 'pass02', '황희찬', null, null, null);
 -- NOT NULL이 아니면 NULL도 가능하긴함!!!
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+INSERT INTO MEM_CHECK
+VALUES(2, 'user03', 'pass03', '이강인', null, null, null);
+--------------------------------------------------------------------------------
+/*
+    * PRIMARY KEY(기본키) 제약조건
+    테이블에서 각 행들을 식별하기 위해 사용될 컬럼에 부여하는 제약 조건(식별자의 역할)
+    
+    EX) 학번, 회원번호, 사원번호(EMP_ID), 부서코드(DEPT_ID), 직급코드(JOB_CODE), 주문번호, 예약번호, 운송장 번호,....
+    
+    PRIMARY KEY 제약조건을 부여하면 그 컬럼에 자동으로 NOT NULL + UNIQUE 제약조건을 가진다.
+    
+    * 유의사항 : 한 테이블당 오로지!!!! 한 개만 설정 가능
+    
+*/
+
+CREATE TABLE MEM_PRI(
+    MEM_NO NUMBER CONSTRAINT MEMNO_PK PRIMARY KEY, -- 컬럼레벨방식
+    MEM_ID VARCHAR2(20) NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20) NOT NULL,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')),
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50)
+    --, CONSTRAINT MEMNO_PK PRIMARY KEY(MEM_NO) -- 테이블 레벨 방식
+);
+
+SELECT * FROM MEM_PRI;
+
+INSERT INTO MEM_PRI
+VALUES(1, 'user01', 'pass01', '손흥민', '남', '010-1111-2222', null);
+
+INSERT INTO MEM_PRI
+VALUES(1, 'user02', 'pass02', '황희찬', '남', null, null);
+-- ORA-00001: unique constraint (DDL.MEMNO_PK) violated
+-- 기본키에 중복값을 담으려고 할 때 (UNIQUE 제약조건에 위배)
+
+INSERT INTO MEM_PRI
+VALUES(null, 'user02', 'pass02', '황희찬', '남', null, null);
+-- ORA-01400: cannot insert NULL into ("DDL"."MEM_PRI"."MEM_NO")
+-- 기본키에 NULL을 담으려고 할 때 (NOT NULL 제약조건에 위배됨)
+
+INSERT INTO MEM_PRI
+VALUES(2, 'user02', 'pass02', '황희찬', '남', null, null);
+
+CREATE TABLE MEM_PRI2(
+    MEM_NO NUMBER CONSTRAINT MEMNO_PK PRIMARY KEY, -- 컬럼레벨방식
+    MEM_ID VARCHAR2(20) PRIMARY KEY,
+    MEM_PWD VARCHAR2(20) NOT NULL,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')),
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50)
+    --, CONSTRAINT MEMNO_PK PRIMARY KEY(MEM_NO) -- 테이블 레벨 방식
+);
+
+-- ORA-02260: table can have only one primary key
+-- 기본키 하나만 된다!!
+
+CREATE TABLE MEM_PRI2(
+    MEM_NO NUMBER,
+    MEM_ID VARCHAR2(20),
+    MEM_PWD VARCHAR2(20) NOT NULL,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')),
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50),
+    PRIMARY KEY(MEM_NO, MEM_ID) -- 묶어서 PRIMARY KEY 제약조건 부여(복합키)
+);
+
+SELECT * FROM MEM_PRI2;
+
+INSERT INTO MEM_PRI2
+VALUES(1, 'user01', 'pass01', '손흥민', null, null, null);
+
+INSERT INTO MEM_PRI2
+VALUES(1, 'user02', 'pass02', '황희찬', null, null, null);                         -- MEM_NO, MEM_ID 둘 중에 하나라도 다르면 가능함. (인스타그램 좋아요, 구독 등)
+
+INSERT INTO MEM_PRI2
+VALUES(1, 'user01', 'pass01', '이강인', null, null, null);                         -- MEM_NO, MEM_ID 모두 일치하므로 오류남.
+
+INSERT INTO MEM_PRI2
+VALUES(null, 'user01', 'pass01', '이강인', null, null, null);
+-- ORA-01400: cannot insert NULL into ("DDL"."MEM_PRI2"."MEM_NO")
+-- PRIMARY KEY로 묶여있는 각 컬럼에는 절대!!! NULL을 허용하지 않음!!!
+
+-- 복합키 사용 예시 (찜하기, 좋아요, 구독)
+-- 찜하기 : 한 상품은 오로지 한 번만 찜할 수 있음
+-- 어떤 회원이 어떤 상품을 찜하는지에 대한 데이터를 보관하는 테이블
+CREATE TABLE TB_LIKE(
+    MEM_ID VARCHAR2(20),
+    PRODUCT_NAME VARCHAR2(10),
+    LIKE_DATE DATE,
+    PRIMARY KEY(MEM_ID, PRODUCT_NAME)
+);
+
+SELECT * FROM TB_LIKE;
+
+INSERT INTO TB_LIKE
+VALUES('user01', '닭', SYSDATE);
+
+INSERT INTO TB_LIKE
+VALUES('user02', '귤', SYSDATE);
+
+INSERT INTO TB_LIKE
+VALUES('user01', '귤', SYSDATE);
 
 
