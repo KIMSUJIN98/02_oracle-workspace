@@ -33,7 +33,7 @@ SELECT * FROM EMPLOYEE;
 
 INSERT INTO EMPLOYEE
 VALUES(900, '차은우', '900101-1234567', 'cha_00@kh.or.kr', '01011112222',
-        'D1', 'J7', 'S3', 4000000, 0.2, 200, SYSDATE, NULL, DEFAULT);
+        'D1', 'J7', 'S3', 4000000, 0.2, 200, SYSDATE, NULL, DEFAULT);            -- 주어진 DEFAULT값이 들어간다
         
 SELECT * FROM EMPLOYEE;
 
@@ -47,12 +47,12 @@ SELECT * FROM EMPLOYEE;
 */
 
 INSERT INTO EMPLOYEE(EMP_ID, EMP_NAME, EMP_NO, JOB_CODE, SAL_LEVEL, HIRE_DATE)
-VALUES(901, '주지훈', '880202-1111111', 'J2', 'S2', SYSDATE);
+VALUES(901, '주지훈', '880202-1111111', 'J2', 'S2', SYSDATE);                     -- 특정 컬럼 제시 후, 특정 값만 대입하는 이 과정이 많이 쓰임.
 
 SELECT * FROM EMPLOYEE;
 -- ENT_YN은 디폴트값으로 들어가있음!!
 
-INSERT
+INSERT                                                                           -- 실무에서는 가독성을 위해 다음과 같이 쓴다.
  INTO EMPLOYEE
      (
           EMP_ID
@@ -89,7 +89,7 @@ SELECT * FROM EMP_01;
 -- 전체 사원들의 사번, 이름, 부서명 조회
 SELECT EMP_ID, EMP_NAME, DEPT_TITLE
 FROM EMPLOYEE
-LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID);
+LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID);                                   -- 부서가 없는 애들까지 전부 조회하기 위해 LEFT 명시함.
 
 INSERT INTO EMP_01 (
 SELECT EMP_ID, EMP_NAME, DEPT_TITLE
@@ -99,7 +99,43 @@ LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
 
 SELECT * FROM EMP_01;
 
+/*
+    [표현식]
+    INSERT ALL
+    INTO 테이블명1 VALUES(컬럼명, 컬럼명, ...)
+    INTO 테이블명2 VALUES(컬럼명, 컬럼명, ...)
+    서브쿼리;
 
+*/
+-- 우선 테스트할 테이블 만들기
+-- 구조만 배끼기
+CREATE TABLE EMP_DEPT
+AS SELECT EMP_ID, EMP_NAME, DEPT_CODE, HIRE_DATE
+   FROM EMPLOYEE
+   WHERE 1 = 0;
+
+SELECT * FROM EMP_DEPT;
+
+CREATE TABLE EMP_MANAGER
+AS SELECT EMP_ID, EMP_NAME, MANAGER_ID
+   FROM EMPLOYEE
+   WHERE 1 = 0;
+
+
+SELECT * FROM EMP_DEPT;
+SELECT * FROM EMP_MANAGER;
+
+-- 부서코드가 D1인 사원들의 사번, 이름, 부서코드, 입사일, 사수사번 조회
+SELECT EMP_ID, EMP_NAME, DEPT_CODE, HIRE_DATE, MANAGER_ID
+FROM EMPLOYEE
+WHERE DEPT_CODE = 'D1';
+
+INSERT ALL
+INTO EMP_DEPT VALUES(EMP_ID, EMP_NAME, DEPT_CODE, HIRE_DATE)
+INTO EMP_MANAGER VALUES(EMP_ID, EMP_NAME, MANAGER_ID)
+    SELECT EMP_ID, EMP_NAME, DEPT_CODE, HIRE_DATE, MANAGER_ID
+    FROM EMPLOYEE
+    WHERE DEPT_CODE = 'D1';                                                      -- 125, 126번 라인의 틀만 주어졌던 테이블에 각각 데이터 값이 매겨짐.
 
 
 
