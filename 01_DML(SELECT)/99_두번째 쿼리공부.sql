@@ -56,60 +56,19 @@ SELECT EMP_NAME, JOB_CODE, SALARY,
 FROM EMPLOYEE;
 
 -- '21/09/28' 와 같은 문자열을 가지고 '2021-09-28'로 표현해보기
+-- TO_DATE('문자열', [포맷]) : DATE
+-- TO_CHAR(날짜, [포맷]) : CHARACTER
+SELECT TO_CHAR(TO_DATE('21/09/28'), 'YYYY-MM-DD')
+FROM DUAL;
+
 -- '210908'와 같은 문자열을 가지고 2021년 9월 8일 표현(구글링 가능) -- 09월 08일이 아님
+SELECT TO_CHAR(TO_DATE('210908'), 'YYYY"년" FMMM"월" DD"일"')
+FROM DUAL;
+-- FM!!!
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- OR SUBSTR을 이용한 강제 출력
+SELECT SUBSTR(TO_CHAR(TO_DATE('210908'), 'YYYY"년 "MM"월" DD"일"'), 1, 6)
+|| SUBSTR(TO_CHAR(TO_DATE('210908'), 'YYYY"년 "MM"월" DD"일"'), 8, 3)
+|| SUBSTR(TO_CHAR(TO_DATE('210908'), 'YYYY"년 "MM"월" DD"일"'), 12, 2)
+FROM DUAL;
 
