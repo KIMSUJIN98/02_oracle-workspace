@@ -1,4 +1,7 @@
 -- 실습문제 --
+DROP TABLE TB_BOOK;                                                              -- 외래키로 엮어있으므로 관계를 먼저 끊는다. => 역순으로 DROP 시킨다.
+DROP TABLE TB_PUBLISHER;
+
 -- 도서관리 프로그램을 만들기 위한 테이블을 만들기
 -- 이때, 제약조건에 이름을 부여할 것
 -- 각 컬럼에 주석달기
@@ -161,9 +164,15 @@ INSERT INTO TB_RENT
 VALUES(73, 81, 11, DEFAULT);
 
 -- 12번 도서를 대여한 회원의 이름, 아이디, 대여일, 반납예정일(대여일+7)을 조회하시오.
+-- 방법1.
 SELECT MEMBER_NAME AS "회원명", MEMBER_ID AS "아이디", RENT_DATE AS "대여일", RENT_DATE + 7 AS "반납예정일"
-FROM TB_BOOK, TB_MEMBER, TB_RENT
+FROM TB_MEMBER, TB_RENT
 WHERE MEMBER_NO = RENT_MEM_NO
-AND BK_NO = RENT_BOOK_NO
 AND RENT_BOOK_NO = 12;
+
+-- 방법2.
+SELECT MEMBER_NAME AS "회원명", MEMBER_ID AS "아이디", RENT_DATE AS "대여일", RENT_DATE + 7 AS "반납예정일"
+FROM TB_MEMBER
+JOIN TB_RENT ON (MEMBER_NO = RENT_MEM_NO)
+WHERE RENT_BOOK_NO = 12;
 
