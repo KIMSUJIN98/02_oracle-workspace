@@ -1,5 +1,5 @@
 -- 먼저 저장
-CREATE TABLE TEST(      -- 집에서는 이것만 수행하면 됨!(주석 지우기)
+CREATE TABLE TEST(
     TEST_ID NUMBER,
     TEST_NAME VARCHAR2(10)
 );
