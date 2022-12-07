@@ -17,9 +17,9 @@ SELECT * FROM KH.EMPLOYEE;                                                      
 -- 조회 권한이 없음
 
 INSERT INTO KH.DEPARTMENT
-VALUES('D0', '회계부', 'L1');                                                     -- 관리자계정에서 삽입 권한만 주었으므로 조회는 불가함. ROLLBACK 할 것이므로 수행할 필요 없음.
+VALUES('D0', '회계부', 'L1');                                                     -- 관리자계정에서 권한부여 후 확인해보니, 데이터값 입력 가능함. ROLLBACK 할 것이므로 수행할 필요 없음.
 
-SELECT * FROM KH.DEPARTMENT;
+SELECT * FROM KH.DEPARTMENT;                                                     -- 삽입 권한만 주었으므로 조회는 불가함.
 
-ROLLBACK;                                                                        -- 원본 복구를 위한 ROLLBACK(수행할 필요없음)
+ROLLBACK;                                                                        -- 원본 복구를 위한 ROLLBACK
 
