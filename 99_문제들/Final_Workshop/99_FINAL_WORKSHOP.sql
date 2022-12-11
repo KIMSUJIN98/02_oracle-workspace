@@ -20,32 +20,60 @@ HAVING COMPOSE_TYPE = '옮김';
 
 -- SELECT * FROM TB_BOOK_AUTHOR WHERE COMPOSE_TYPE = '옮김';
 
--- 6. 300권 이상 등록된 도서의 저작 형태 및 등록된 도서 수량을 표시하는 SQL 구문을 작성하시오.(저작
--- 형태가 등록되지 않은 경우는 제외할 것)
-
+-- 6. 300권 이상 등록된 도서의 저작 형태 및 등록된 도서 수량을 표시하는 SQL 구문을 작성하시오.
+-- (저작 형태가 등록되지 않은 경우는 제외할 것)**
+SELECT COMPOSE_TYPE, COUNT(*)
+FROM TB_BOOK_AUTHOR
+WHERE COMPOSE_TYPE IS NOT NULL
+GROUP BY COMPOSE_TYPE
+HAVING COUNT(*) >= 300;
 
 -- 7. 가장 최근에 발간된 최신작 이름과 발행일자, 출판사 이름을 표시하는 SQL 구문을 작성하시오.
-
+SELECT *
+FROM(SELECT BOOK_NM, ISSUE_DATE, PUBLISHER_NM
+     FROM TB_BOOK
+     ORDER BY 2 DESC)
+WHERE ROWNUM = 1;
 
 -- 8. 가장 많은 책을 쓴 작가 3명의 이름과 수량을 표시하되, 많이 쓴 순서대로 표시하는 SQL 구문을 작성하시오.
 -- 단, 동명이인(同名異人) 작가는 없다고 가정한다. (결과 헤더는 “작가 이름”, “권 수”로 표시되도록 할 것)
 
 
 -- 9. 작가 정보 테이블의 모든 등록일자 항목이 누락되어 있는 걸 발견하였다. 누락된 등록일자 값을 각 작가의
--- ‘최초 출판도서의 발행일과 동일한 날짜’로 변경시키는 SQL 구문을 작성하시오. (COMMIT 처리할 것)
-
+-- ‘최초 출판도서의 발행일과 동일한 날짜’로 변경시키는 SQL 구문을 작성하시오. (COMMIT 처리할 것) **
+UPDATE TB_WRITER A
+SET REGIST_DATE = (SELECT MIN(ISSUE_DATE)
+                   FROM TB_BOOK
+                   JOIN TB_BOOK_AUTHOR USING(BOOK_NO)
+                   WHERE A.WRITER_NO = WRITER_NO);
 
 -- 10. 현재 도서저자 정보 테이블은 저서와 번역서를 구분 없이 관리하고 있다. 앞으로는 번역서는 따로 관리하려
 -- 고 한다. 제시된 내용에 맞게 “TB_BOOK_ TRANSLATOR” 테이블을 생성하는 SQL 구문을 작성하시오. 
 -- (Primary Key 제약 조건 이름은 “PK_BOOK_TRANSLATOR”로 하고, Reference 제약 조건 이름은
 -- “FK_BOOK_TRANSLATOR_01”, “FK_BOOK_TRANSLATOR_02”로 할 것)
+CREATE TABLE TB_BOOK_TRANSLATOR(
+    WRITER_NO VARCHAR2(10) CONSTRAINT FK_BOOK_TRANSLATOR_01 REFERENCES TB_WRITER NOT NULL,
+    BOOK_NO VARCHAR2(10) CONSTRAINT FK_BOOK_TRANSLATOR_02 REFERENCES TB_BOOK NOT NULL,
+    TRANS_LANG VARCHAR2(60),
+    CONSTRAINT PK_BOOK_TRANSLATOR PRIMARY KEY(BOOK_NO, WRITER_NO)
+);
 
+COMMENT ON COLUMN TB_BOOK_TRANSLATOR.WRITER_NO IS '작가 번호';
+COMMENT ON COLUMN TB_BOOK_TRANSLATOR.BOOK_NO IS '도서 번호';
+COMMENT ON COLUMN TB_BOOK_TRANSLATOR.TRANS_LANG IS '번역 언어';
+
+-- DROP TABLE TB_BOOK_TRANSLATOR;
+SELECT * FROM TB_BOOK_TRANSLATOR;
 
 -- 11. 도서 저작 형태(compose_type)가 '옮김', '역주', '편역', '공역'에 해당하는 데이터는
 -- 도서 저자 정보 테이블에서 도서 역자 정보 테이블(TB_BOOK_ TRANSLATOR)로 옮기는 SQL 
 -- 구문을 작성하시오. 단, “TRANS_LANG” 컬럼은 NULL 상태로 두도록 한다. (이동된 데이터는 더
 -- 이상 TB_BOOK_AUTHOR 테이블에 남아 있지 않도록 삭제할 것)
-
+INSERT INTO TB_BOOK_TRANSLATOR(
+SELECT *
+FROM TB_BOOK_AUTHOR
+WHERE COMPOSE_TYPE IN('옮김', '역주', '편역', '공역')
+);
 
 -- 12. 2007년도에 출판된 번역서 이름과 번역자(역자)를 표시하는 SQL 구문을 작성하시오.
 
