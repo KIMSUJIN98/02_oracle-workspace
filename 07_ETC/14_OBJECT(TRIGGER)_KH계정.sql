@@ -175,7 +175,7 @@ VALUES(SEQ_DCODE.NEXTVAL, 210, SYSDATE, 7, '출고');                             
 INSERT INTO TB_PRODETAIL
 VALUES(SEQ_DCODE.NEXTVAL, 200, SYSDATE, 100, '입고');
 
---------------------------------------------------------------------------------
+-------------------------------------- 연습하기 ---------------------------------
 /*SET SERVEROUTPUT ON;*/
 DROP TABLE TB_ABSENCE;
 DROP TABLE TB_STU;
