@@ -41,3 +41,42 @@ JOIN TB_JOB ON(JOBNO = JOBCODE);
 -- 제약조건 => 뒤늦게 제약조건을 추가할 수 있는 ALTER문 작성                              -- 각 제약조건이 무엇인지
 -- DCL 뭐냐?                                                                      -- GRANT, REVOKE
 -- 커밋 롤백 뭐냐?
+--------------------------------------------------------------------------------
+-- QUIZ3 (JOIN 복습)
+
+-- 아래의 SQL구문은 부서별 월급합계가 15,000,000 을 초과하는 부서를 조회한 것이다.
+-- 그 결과가 올바르지 않다고 할 때 그 원인과 조치사항
+SELECT DEPT_CODE, SUM(SALARY)
+FROM EMPLOYEE
+WHERE SALARY > 15000000
+GROUP BY DEPT_CODE;
+
+SELECT DEPT_CODE, SUM(SALARY)
+FROM EMPLOYEE
+GROUP BY DEPT_CODE
+HAVING SUM(SALARY) > 15000000;
+-- 그룹함수는 WHERE절이 아닌 HAVING절로 조건을 비교해야 하고, 월급합계는 SUM(SALARY)로 표현해줘야 함.
+
+-- QUIZ 4(제약조건)
+CREATE TABLE QUIZ4(
+    QNO NUMBER PRIMARY KEY,
+    QNAME VARCHAR2(10),
+    SCORE NUMBER
+);
+
+INSERT INTO QUIZ4 VALUES(1, '퀴즈1번', 30);
+INSERT INTO QUIZ4 VALUES(NULL, '퀴즈2번', 50);
+-- 제약조건 확인! PRIMARY KEY는 식별자이기 때문에 유일하고 NULL이면 안된다.
+
+-- QUIZ 5
+-- JOIN => DECODE
+-- J7인 사원은 급여를 10% 인상
+-- J6인 사원은 급여를 15% 인상
+
+-- QUIZ 6
+-- '21/09/28' 문자열을 '2021-09-28'로 표현하기
+-- '210908' 문자열을 2021년 9월 8일 로 표현하기 => FM 사용
+
+-- QUIZ 7
+-- 초급개발자 중급개발자 고급개발자
+-- CASE WHEN
