@@ -39,17 +39,67 @@ SELECT * FROM EMP;
 
 DROP TABLE EMP;
 -- =============================================================================
+-- 1215 SQL 활용 테스트
+SELECT DEPT_CODE, SUM(SALARY) 합계, FLOOR(AVG(SALARY)) 평균, COUNT(*) 인원수
+FROM EMPLOYEE
+GROUP BY DEPT_CODE
+HAVING AVG(SALARY) > 2800000
+ORDER BY 1 ASC;
 
+SELECT * FROM EMPLOYEE;
 
+-- 그룹함수의 조건식은 WHERE절이 아닌 HAVING절로 비교해야 한다.
+-- 그냥 월급(SALARY)이 아닌 평균 월급을 비교해야하므로 AVG(SALARY)로 기술해야 한다.
+/*
+SELECT DEPT, SUM(SALARY) 합계, FLOOR(AVG(SALARY)) 평균, COUNT(*) 인원수
+FROM EMP
+GROUP BY DEPT
+HAVING AVG(SALARY) > 2800000
+ORDER BY DEPT ASC;
+*/
 
+DROP TABLE MEMBER_KH;
 
+CREATE TABLE MEMBER_KH(
+    MNO NUMBER PRIMARY KEY,             -- 회원번호
+    MNAME VARCHAR2(300) NOT NULL,       -- 회원명
+    ADDRESS VARCHAR2(1000),             -- 주소
+    TEL VARCHAR2(13) UNIQUE             -- 연락처
+);
 
+INSERT INTO MEMBER_KH VALUES(1, '홍길동', '서울시 강남구', '011-0000-0000');
+INSERT INTO MEMBER_KH VALUES(1, '고길동', '부산시 해운대구', '010-0000-0000');
+INSERT INTO MEMBER_KH VALUES(1, '김갑환', '인천시 연수구', '019-0000-0000');
 
+-- 현재 MNO 컬럼은 제약조건이 PRIMARY KEY로 식별자의 역할을 한다.
+-- PRIMARY KEY는 자동적으로 UNIQUE + NOT NULL 제약조건을 갖는데, 위의 INSERT문을 보면 MNO 컬럼의 값이 1로 중복되는 것을 확인할 수 있다.
+-- 따라서 각 INSERT문은 MNO 컬럼에 NULL값이 아닌 서로 다른 값을 가져야 한다.
 
+-- 아래와 같이 NULL값이 아니고, 중복되지 않은 값이 들어가야 한다.
+INSERT INTO MEMBER_KH VALUES(1, '홍길동', '서울시 강남구', '011-0000-0000');
+INSERT INTO MEMBER_KH VALUES(2, '고길동', '부산시 해운대구', '010-0000-0000');
+INSERT INTO MEMBER_KH VALUES(3, '김갑환', '인천시 연수구', '019-0000-0000');
 
+-- =============================================================================
+-- 내부조인, 연결시키는 컬럼값이 일치하는 행들만 조인되서 조회
 
+-- 외부조인, 기준 테이블 제시하여 일치하지 않는 행들도 포함해 조회 가능
 
+-- 테이블 : 데이터를 일종의 표 형태로 표현하는 것
 
+-- TRIM() : 문자열의 앞 LEADING / 뒤 TRAILING / 양쪽 BOTH 에서 지정 문자들을 제거한 문자열을 반환하는 함수(생략시 공백 제거, 끼여있는 가운데 공백은 제거 못함)
+
+-- ROLLUP() : 그룹별 산출된 결과값에 중간집계를 계산해주는 함수, GROUP BY절에 기술
+
+SELECT EMPNAME AS "직원명", JOBCODE AS "직급코드", SALARY AS "급여",
+       DECODE(JOBCODE, 'J7', SALARY * 1.08, 'J6', SALARY * 1.07, 'J5', SALARY * 1.05, SALARY * 1.03) AS "인상급여"
+FROM EMP;
+
+SELECT EMP_NAME AS "직원명", JOB_CODE AS "직급코드", SALARY AS "급여",
+       DECODE(JOB_CODE, 'J7', SALARY * 1.08, 'J6', SALARY * 1.07, 'J5', SALARY * 1.05, SALARY * 1.03) AS "인상급여"
+FROM EMPLOYEE;
+
+-- =============================================================================
 
 
 
