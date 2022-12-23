@@ -100,55 +100,60 @@ SELECT EMP_NAME AS "직원명", JOB_CODE AS "직급코드", SALARY AS "급여",
 FROM EMPLOYEE;
 
 -- =============================================================================
+-- 2022.12.23 SQL 응용
+
+-- 문제해결과 시나리오
+
+-- 관리자 계정
+-- 관리자 계정에서 계정 생성만 하고, 접속 권한 부여를 하지 않았기 때문에 위와 같은 에러가 발생했다.
+CREATE USER EMP IDENTIFIED BY EMP0123;
+GRANT CONNECT, RESOURCE TO EMP;
+
+DROP USER EMP CASCADE;
+
+-- NULL은 일반비교연산자를 사용하여 비교할 수 없다. 해당 조건에서는 IS NOT NULL로 비교해줘야 한다.
+-- EMPNAME이 GROUP BY절에 기술되지 않았다. 그룹으로 묶인 경우, SELECT 문에 있는 컬럼은 GROUP BY절에 기술하거나 그룹함수로 씌워져 있어야 한다.?
+SELECT EMPNAME, JOBCODE, COUNT(*) AS 사원수
+FROM EMP
+WHERE BONUS IS NOT NULL
+GROUP BY EMPNAME, JOBCODE
+ORDER BY JOBCODE;
+
+-- 서술형
+-- 뷰: 논리적인 가상 테이블로 실질적인 데이터를 담고 있지 않으며 SELECT문(쿼리문)을 저장해둘 수 있는 객체
+--     DML로 뷰 조작시, 베이스테이블이 변경되나 안되는 경우가 더 많고 서브쿼리에 산술연산식이나 함수식 사용한 경우 반드시 별칭을 지정해야 함.
+
+-- 삭제 제한옵션
+-- ON DELETE CASCADE : 부모 삭제시 자식데이터 같이 삭제
 
 
+-- 서브쿼리 : 메인 SQL문을 위해 보조 역할하는 쿼리문, 하나의 SQL문 안에 포함된 또 다른 SELECT문
+-- 	    서브쿼리를 수행한 결과에 따라 단일행, 다중행, 다중열, 다중행 다중열 서브쿼리로 나뉜다.
 
+-- DDL 데이터 정의 언어 : 객체 만들고 수정, 삭제하는 구문 CREATE, ALTER, DROP
 
+-- NOT NULL : 해당 컬럼에 반드시 값이 존재해야되는 경우 사용(NULL값 불가), 컬럼레벨 방식만 사용가능
+-- UNIQUE : 해당 컬럼에 중복값을 허용하지 않는 제약조건
+-- PRIMARY KEY : 테이블에서 각 행을 식별하기 위해 사용될 컬럼에 부여하는 제약조건, 자동으로 NOT NULL + UNIQUE 제약조건, 한 테이블당 하나만 설정 가능
+-- FOREIGN KEY : 다른 테이블을 참조하여 그 테이블의 값만 들어와야 되는 컬럼에 부여하는 제약조건, 컬럼명 생략시 참조 테이블의 pk로 매칭한다.
 
+-- 예시
+ALTER TABLE EMP
+	ADD CONSTRAINT EID_PK  PRIMARY KEY(EID)
+	ADD CONSTRAINT EPW_UQ UNIQUE(EPW)
+	MODIFY LNAME CONSTRAINT NN_LNAME NOT NULL;
 
+-- 문제
+DROP TABLE memberTb;
 
+CREATE TABLE memberTb(
+    id VARCHAR2(10),
+    pass VARCHAR2(20),
+    name VARCHAR2(10),
+    age NUMBER
+);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+INSERT INTO memberTb VALUES('0100', '1234', '이지은', 25);
+INSERT INTO memberTb VALUES('0101', 'kimleechoi', '강한나', 30);
+INSERT INTO memberTb VALUES('0102', 'snsd', '서주현', 28);
 
